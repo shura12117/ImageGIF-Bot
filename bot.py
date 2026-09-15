@@ -155,7 +155,7 @@ class GIFPaginator(discord.ui.View):
     @discord.ui.button(label="⏭️", style=discord.ButtonStyle.gray)
     async def last(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.id != self.author_id:
-            return await interaction.response.send_message(" Не ваша команда!", ephemeral=True)
+            return await interaction.response.send_message("❌ Не ваша команда!", ephemeral=True)
         self.current_index = len(self.gifs) - 1
         await self.update_message(interaction)
     
@@ -246,10 +246,17 @@ async def on_ready():
     global session
     session = aiohttp.ClientSession()
     
+    # ===== УСТАНОВКА СТАТУСА БОТА =====
+    await client.change_presence(
+        activity=discord.Game(name="Сайт imagegif.gt.tc")
+    )
+    # ==================================
+    
     logger.info("=" * 70)
     logger.info(f"✅ Бот подключён: {client.user}")
     logger.info(f"📊 Серверов: {len(client.guilds)}")
     logger.info(f"🆔 ID: {client.user.id}")
+    logger.info(f"🎮 Статус установлен: Играет в Сайт imagegif.gt.tc")
     logger.info("=" * 70)
     
     try:
@@ -296,7 +303,7 @@ async def gif_command(interaction: discord.Interaction, query: str):
                 
                 embed = discord.Embed(title=title, color=discord.Color.pink())
                 embed.set_image(url=gif_url)
-                embed.set_footer(text=f" 1/{len(gifs)} | Giphy")
+                embed.set_footer(text=f"📸 1/{len(gifs)} | Giphy")
                 
                 view = GIFPaginator(gifs, interaction.user.id, "Giphy")
                 msg = await interaction.followup.send(embed=embed, view=view)
@@ -360,7 +367,7 @@ async def image_command(interaction: discord.Interaction, query: str):
         await interaction.followup.send(f"❌ Ошибка: {str(e)}", ephemeral=True)
 
 
-@client.tree.command(name="help", description=" Справка")
+@client.tree.command(name="help", description="📖 Справка")
 async def help_command(interaction: discord.Interaction):
     embed = discord.Embed(
         title="📖 Image GIF Bot - Справка",
@@ -391,7 +398,7 @@ async def ping_command(interaction: discord.Interaction):
 
 if __name__ == "__main__":
     try:
-        logger.info(" Запуск бота...")
+        logger.info("🚀 Запуск бота...")
         logger.info(f"🔑 Использование токена (длина: {len(config.BOT_TOKEN)})")
         client.run(config.BOT_TOKEN)
     except discord.LoginFailure:
